@@ -14,12 +14,12 @@ public class Node_data implements NodeData{
     HashMap<Integer, EdgeData> edges_in;
     int edge_num = 0;
     int edgeIn_num = 0;
-    static int amount = 0;
+    static int amount = -1;
     int key = 0;
     GeoLocation point;
     double weight = 0;
     String info = "";
-    int tag = 0;
+    int tag = -1;
 
     public Node_data(double x,double y, double z, int id){
         amount++;
@@ -65,13 +65,14 @@ public class Node_data implements NodeData{
      */
     public Node_data(NodeData node_to_copy) {
         Node_data n = (Node_data) node_to_copy;
-        amount++;
-        this.key = amount;
+
+        this.key = node_to_copy.getKey();
         this.point = new Geo_location(n.getLocation());// may need to make a new point
         this.weight = n.getWeight();
         this.info = n.getInfo();
         this.tag = n.getTag();
-
+        this.edges = new HashMap<>();
+        this.edges_in = new HashMap<>();
         for(int key : n.edges.keySet()){
             this.edges.put(key,new Edge_data(n.edges.get(key)));
         }
@@ -132,8 +133,6 @@ public class Node_data implements NodeData{
     @Override
     public String toString() {
         return "Node_data{key=" + this.key +
-                ", point=" + point +
-                Arrays.asList(this.edges) +" , in- "+ Arrays.asList(this.edges_in) +
                 '}';
     }
 }

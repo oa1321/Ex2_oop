@@ -43,6 +43,7 @@ public class DWG implements DirectedWeightedGraph{
     @Override
     public void connect(int src, int dest, double w) {
         if(this.G.containsKey(src)){
+
             this.MC ++;
             EdgeData new_e = new Edge_data(src,dest,w,0);
             ((Node_data) this.G.get(src)).addEdge(new_e);
