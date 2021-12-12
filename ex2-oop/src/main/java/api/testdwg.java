@@ -9,7 +9,7 @@ import java.util.Random.*;
 public class testdwg {
     public static void main(String[] args) throws FileNotFoundException {
         algo_dwg d = new algo_dwg();
-        d.load("G3.json");
+        d.load("src\\main\\resources\\data\\G3.json");
 /*        DWG G = new DWG();
         for(int i =0;i<1000;i++){
             Node_data n = new Node_data(new Geo_location(1,1,1),0,"",0);

@@ -21,6 +21,13 @@ public class Node_data implements NodeData{
     String info = "";
     int tag = -1;
 
+    /**anouter constructor used to reading form a file
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param id
+     */
     public Node_data(double x,double y, double z, int id){
         amount++;
         this.point = new Geo_location(x,y,z);
@@ -85,51 +92,86 @@ public class Node_data implements NodeData{
         this.edge_num = n.getEdge_num();
     }
 
+    /**
+     * @return THE ID of the node
+     */
     @Override
     public int getKey() {
         return this.key;
     }
 
+    /**
+     * returns the location of the node
+     * @return
+     */
     @Override
     public GeoLocation getLocation() {
         return this.point;
     }
 
+    /**set a new location
+     *
+     * @param p - new new location  (position) of this node.
+     */
     @Override
     public void setLocation(GeoLocation p) {
         this.point = p;
     }
 
+    /**
+     * RETURN THE WEIGHT OF THIS NODE
+     * @return
+     */
     @Override
     public double getWeight() {
         return this.weight;
     }
 
+    /**seting a new weight to the node
+     *
+     * @param w - the new weight
+     */
     @Override
     public void setWeight(double w) {
         this.weight = w;
     }
 
+    /**
+     * returns the info of the node
+     * @return
+     */
     @Override
     public String getInfo() {
         return this.info;
     }
 
+    /**
+     * set the info of the node
+     * @param s
+     */
     @Override
     public void setInfo(String s) {
         this.info = s;
     }
 
+    /**
+     * returns the node tag
+     * @return
+     */
     @Override
     public int getTag() {
         return this.tag;
     }
 
+    /**
+     * set the node tag
+     * @param t - the new value of the tag
+     */
     @Override
     public void setTag(int t) {
         this.tag = t;
     }
-
+    // a simple to string method
     @Override
     public String toString() {
         return "Node_data{key=" + this.key +

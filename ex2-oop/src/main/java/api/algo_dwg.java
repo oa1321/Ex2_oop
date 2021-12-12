@@ -16,19 +16,32 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
     private static final int not_visited = 0;
     Stack<Integer> dfs_stack = null;
 
+    //constructor that create a new algo graph
     public algo_dwg(){
     }
 
+    /**
+     * set the graph for the algorithems
+     * @param g
+     */
     @Override
     public void init(DirectedWeightedGraph g) {
         this.G = (DWG)g;
     }
 
+    /**
+     * gets the graph
+     * @return the DWG graph
+     */
     @Override
     public DirectedWeightedGraph getGraph() {
         return this.G;
     }
 
+    /**
+     *
+     * @return a full deep copy of the graph form nodes to edges to geolocations
+     */
     @Override
     public DirectedWeightedGraph copy() {
         DWG new_g = new DWG();
@@ -38,6 +51,10 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         return new_g;
     }
 
+    /**
+     * a dfs travel on the graph
+     * @param index
+     */
     private void DFS(int index){
         Stack<Integer> stacky = new Stack<>();
         stacky.add(index);
@@ -53,6 +70,10 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
             }
         }
     }
+    /**
+     * a dfs travel on the graph but all the edges are reversed
+     * @param index
+     */
     private void DFS_reverse(int index){
         Stack<Integer> stacky = new Stack<>();
         stacky.add(index);
@@ -68,6 +89,11 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
             }
         }
     }
+
+    /**
+     * set all the nodes tag to a certin int
+     * @param t
+     */
     private void set_all_nodes_tag(int t){
         Iterator<NodeData> iter = this.G.nodeIter();
         while(iter.hasNext()){
@@ -76,6 +102,8 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
     }
 
     /**using Kosaraju's Algorithm for Strongly Connected Components
+     * to check if the graph is connceted
+     * if only one componnent than the graph is conncted
      * https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
      * @return
      */
@@ -98,10 +126,16 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
                 this.DFS_reverse(i);
             }
         }
-        System.out.println(connetcted_parts_sum);
+        this.set_all_nodes_tag(0);
         return connetcted_parts_sum == 1;
     }
 
+    /**
+     * returns the distance of the shortest path from one node to anouter
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return -1 if no path find
+     */
     @Override
     public double shortestPathDist(int src, int dest) {
         HashMap<Integer, Double[]> paths = new HashMap<>();
@@ -112,7 +146,7 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         paths.put(src,new Double[]{0.0,src+0.0});
         int min = src;
         double min_weight = -1;
-        Boolean[] done_nodes = new Boolean[this.G.node_num];
+        Boolean[] done_nodes = new Boolean[this.G.node_num_max];
         Arrays.fill(done_nodes, false);
         done_nodes[src] = true;
         while(done<=this.G.node_num) {
@@ -146,6 +180,12 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         return paths.get(dest)[0];
     }
 
+    /**
+     * returns the actoual path from one node to anouter
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return the path of nodes null if no path exist
+     */
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
         HashMap<Integer, Double[]> paths = new HashMap<>();
@@ -156,7 +196,7 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         paths.put(src,new Double[]{0.0,src+0.0});
         int min = src;
         double min_weight = -1;
-        Boolean[] done_nodes = new Boolean[this.G.node_num];
+        Boolean[] done_nodes = new Boolean[this.G.node_num_max];
         Arrays.fill(done_nodes, false);
         done_nodes[src] = true;
         while(done<=this.G.node_num) {
@@ -201,59 +241,10 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         return null;
     }
 
-    public List<NodeData> shortestPathForTSP(int src, int dest) {
-        HashMap<Integer, Double[]> paths = new HashMap<>();
-        int done = 0;
-        for(int key: this.G.G.keySet()){
-            paths.put(key,new Double[]{-1.0,-1.0});
-        }
-        paths.put(src,new Double[]{0.0,src+0.0});
-        int min = src;
-        double min_weight = -1;
-        Boolean[] done_nodes = new Boolean[this.G.node_num];
-        Arrays.fill(done_nodes, false);
-        done_nodes[src] = true;
-        while(done<=this.G.node_num) {
-            done++;
-            Node_data curr = ((Node_data) this.G.getNode(min));
-            done_nodes[min] = true;
-            for (int key : curr.edges.keySet()) {
-                if (paths.get(key)[0] == -1) {
-                    paths.put(key, new Double[]{curr.edges.get(key).getWeight(), curr.getKey() + 0.0});
-                } else if (paths.get(key)[0] > paths.get(curr.getKey())[0] + curr.edges.get(key).getWeight()) {
-                    paths.put(key, new Double[]{paths.get(curr.getKey())[0] + curr.edges.get(key).getWeight(), curr.getKey() + 0.0});
-                }
-            }
-            min_weight = -1;
-            for (int key : paths.keySet()){
-                if(!done_nodes[key]){
-                    if(paths.get(key)[0] != -1){
-                        if(min_weight == -1){
-                            min = key;
-                            min_weight = paths.get(key)[0];
-                        }
-                        else if (paths.get(key)[0]<min_weight){
-                            min = key;
-                            min_weight = paths.get(key)[0];
-                        }
-                    }
-                }
-            }
-
-        }
-        if(paths.get(dest)[0]!=-1) {
-            int curr_id = dest;
-            List<NodeData> p = new LinkedList<>();
-            while (curr_id != src) {
-                p.add(this.G.getNode(curr_id));
-                double new_curr = paths.get(curr_id)[1];
-                curr_id = (int) new_curr;
-            }
-            return p;
-        }
-        return null;
-    }
-
+    /**
+     * retunrs the center of a grph
+     * @return
+     */
     @Override
     public NodeData center() {
         int center=0;
@@ -283,6 +274,13 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         return this.G.getNode(center);
     }
 
+    /**
+     * the traveling sales man problrm
+     * find a path the go through all the nodes in the list
+     * and return a list of the  nodes we go throgh
+     * @param cities
+     * @return null if no path exist
+     */
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
         if(cities.isEmpty()){
@@ -321,6 +319,11 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         return full_path;
     }
 
+    /**
+     * save a json file represent your graph onto the comuter
+     * @param file - the file name (may include a relative path).
+     * @return
+     */
     @Override
     public boolean save(String file) {
         try {
@@ -356,19 +359,22 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
             return true;
         }
         catch (FileNotFoundException e){
-            System.out.println("file not found");
             return false;
         }
         catch (IOException e) {
-            e.printStackTrace();
             return false;
         }
     }
 
+    /**
+     * loads a json file from the computer
+     * @param file - file name of JSON file
+     * @return
+     */
     @Override
     public boolean load(String file) {
         try {
-            String path = "C:\\Users\\ofek alon\\IdeaProjects\\ex2-oop\\src\\main\\resources\\data\\"+file;
+            String path = file;
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
             Gson gson = new Gson();
 
@@ -401,7 +407,6 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
             return true;
         }
         catch (FileNotFoundException e){
-            System.out.println("file not found");
             return false;
         }
 

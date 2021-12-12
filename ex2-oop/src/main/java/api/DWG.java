@@ -7,12 +7,19 @@ import java.util.LinkedList;
 public class DWG implements DirectedWeightedGraph{
     HashMap<Integer, NodeData> G;
     int node_num = 0;
+    int node_num_max=0;
     int edge_num = 0;
     int MC = 0;
+    //intilaze a new hashmap to contain all the nodes
     public DWG(){
         this.G = new HashMap<>();
     }
 
+    /**
+     *
+     * @param key - the node_id
+     * @return the nodedata with the id=key
+     */
     @Override
     public NodeData getNode(int key) {
         if(this.G.containsKey(key)){
@@ -21,6 +28,12 @@ public class DWG implements DirectedWeightedGraph{
         return null;
     }
 
+    /**
+     *
+     * @param src
+     * @param dest
+     * @return the edge data that starts with the src and ends in dest
+     */
     @Override
     public EdgeData getEdge(int src, int dest) {
         if(this.G.containsKey(src)){
@@ -32,14 +45,27 @@ public class DWG implements DirectedWeightedGraph{
         return null;
     }
 
+    /**
+     * adding a new nodedata to the graph
+     * @param n a nodedata
+     */
     @Override
     public void addNode(NodeData n) {
         this.node_num ++;
+        if(node_num_max<node_num){
+            node_num_max++;
+        }
         this.edge_num += ((Node_data) n).getEdge_num();
         this.MC ++;
         this.G.put(n.getKey(), n);
     }
 
+    /**
+     * create a new edge between the src and dest
+     * @param src - the source of the edge.
+     * @param dest - the destination of the edge.
+     * @param w - positive weight representing the cost (aka time, price, etc) between src-->dest.
+     */
     @Override
     public void connect(int src, int dest, double w) {
         if(this.G.containsKey(src)){
@@ -52,6 +78,10 @@ public class DWG implements DirectedWeightedGraph{
         }
     }
 
+    /**
+     * returns a node iterator
+     * @return
+     */
     @Override
     public Iterator<NodeData> nodeIter() {
         int MC_start = this.MC;
@@ -61,7 +91,10 @@ public class DWG implements DirectedWeightedGraph{
         }
         return iter;
     }
-
+    /**
+     * returns a edge iterator  =of all the edges in the graph
+     * @return
+     */
     @Override
     public Iterator<EdgeData> edgeIter() {
         int MC_start = this.MC;
@@ -80,7 +113,10 @@ public class DWG implements DirectedWeightedGraph{
         }
         return e_iter;
     }
-
+    /**
+     * returns a edge iteratorof all the edges in a node
+     * @return
+     */
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
         int MC_start = this.MC;
@@ -91,6 +127,11 @@ public class DWG implements DirectedWeightedGraph{
         return e_iter;
     }
 
+    /**
+     * removing a node and all of the edges conncted to her(in and out)
+     * @param key is the id
+     * @return the nodedata we removed
+     */
     @Override
     public NodeData removeNode(int key) {
         if(this.G.containsKey(key)){
@@ -121,6 +162,12 @@ public class DWG implements DirectedWeightedGraph{
         return null;
     }
 
+    /**
+     * disconnect the edge between src and dest
+     * @param src
+     * @param dest
+     * @return the edgedat a we removed
+     */
     @Override
     public EdgeData removeEdge(int src, int dest) {
         if(this.G.containsKey(src)){
@@ -138,16 +185,28 @@ public class DWG implements DirectedWeightedGraph{
         return null;
     }
 
+    /**
+     * returns the amount of nodes in the graph
+     * @return
+     */
     @Override
     public int nodeSize() {
         return this.node_num;
     }
 
+    /**
+     * returns the amount of edges in the graph
+     * @return
+     */
     @Override
     public int edgeSize() {
         return this.edge_num;
     }
 
+    /**
+     * returns the amount of modifictions the graph had
+     * @return
+     */
     @Override
     public int getMC() {
         return this.MC;

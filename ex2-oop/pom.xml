@@ -6,7 +6,7 @@
     <groupId>org.example</groupId>
     <artifactId>ex2-oop</artifactId>
     <version>1.0-SNAPSHOT</version>
-
+    <packaging>jar</packaging>
 
 
     <dependencies>
