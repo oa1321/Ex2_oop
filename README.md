@@ -72,7 +72,7 @@ the use of hashmap in both cases are because of the runtime that we needed to ha
 
 #### DWG:
 
-    HashMap<Integer, NodeData> G;
+    HashMap<Integer, NodeData> G= a hash map of all the Vertex in the graph ;
     int node_num = 0;
     int node_num_max=0;
     int edge_num = 0;
@@ -97,6 +97,7 @@ the use of hashmap in both cases are because of the runtime that we needed to ha
 #### my frame:
     is where the gui itself is building itself it says where to put each element and the action listeners
 ## GUI
+ ![image](https://user-images.githubusercontent.com/73098848/145854073-353ee629-efa9-4b43-9b62-34f20b46f339.png)
 
 ### About
 we used swing for the GUI and build two class that got used for the GUI in the end the panel and the main frame 
