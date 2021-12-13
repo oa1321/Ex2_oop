@@ -252,7 +252,7 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         for(NodeData n : this.G.G.values() ){
             Node_data node = (Node_data) n;
             int min = node.getKey();
-            double max_min_dist=0;
+            double max_min_dist=-2;
             for(int key: this.G.G.keySet()){
                 if(key != node.getKey()){
                     double dist = this.shortestPathDist(node.getKey(), key);
@@ -271,7 +271,12 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
                 center = min;
             }
         }
-        return this.G.getNode(center);
+        if(this.isConnected()) {
+            return this.G.getNode(center);
+        }
+        else{
+            return null;
+        }
     }
 
     /**

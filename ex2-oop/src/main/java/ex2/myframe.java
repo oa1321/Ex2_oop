@@ -333,12 +333,15 @@ public class myframe extends JFrame implements ActionListener {
             }
         }
         else if(e.getSource() == algo_center && my_algo != null){
-            graph_panel.clear();
-            my_algo.center().setTag(1);
-            graph_panel.set_graph(my_algo.getGraph());
-            graph_panel.clear();
-            graph_panel.update();
-            my_algo.center().setTag(0);
+            Node_data n = (Node_data) my_algo.center();
+            if(n!=null) {
+                graph_panel.clear();
+                n.setTag(1);
+                graph_panel.set_graph(my_algo.getGraph());
+                graph_panel.clear();
+                graph_panel.update();
+                n.setTag(0);
+            }
 
         }
         else if(e.getSource() == algo_connected && my_algo != null){
