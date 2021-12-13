@@ -146,7 +146,7 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
         paths.put(src,new Double[]{0.0,src+0.0});
         int min = src;
         double min_weight = -1;
-        Boolean[] done_nodes = new Boolean[this.G.node_num_max];
+        Boolean[] done_nodes = new Boolean[Node_data.amount+1];
         Arrays.fill(done_nodes, false);
         done_nodes[src] = true;
         while(done<=this.G.node_num) {
@@ -154,11 +154,13 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
             done++;
             Node_data curr = ((Node_data) this.G.getNode(min));
             done_nodes[min] = true;
-            for (int key : curr.edges.keySet()) {
-                if (paths.get(key)[0] == -1) {
-                    paths.put(key, new Double[]{curr.edges.get(key).getWeight()+paths.get(curr.getKey())[0] , curr.getKey() + 0.0});
-                } else if (paths.get(key)[0] > paths.get(curr.getKey())[0] + curr.edges.get(key).getWeight()) {
-                    paths.put(key, new Double[]{paths.get(curr.getKey())[0] + curr.edges.get(key).getWeight(), curr.getKey() + 0.0});
+            if(curr != null) {
+                for (int key : curr.edges.keySet()) {
+                    if (paths.get(key)[0] == -1) {
+                        paths.put(key, new Double[]{curr.edges.get(key).getWeight() + paths.get(curr.getKey())[0], curr.getKey() + 0.0});
+                    } else if (paths.get(key)[0] > paths.get(curr.getKey())[0] + curr.edges.get(key).getWeight()) {
+                        paths.put(key, new Double[]{paths.get(curr.getKey())[0] + curr.edges.get(key).getWeight(), curr.getKey() + 0.0});
+                    }
                 }
             }
             min_weight = -1;
@@ -247,36 +249,74 @@ public class algo_dwg implements DirectedWeightedGraphAlgorithms{
      */
     @Override
     public NodeData center() {
-        int center=0;
-        double dist_of_center=-1;
-        for(NodeData n : this.G.G.values() ){
-            Node_data node = (Node_data) n;
-            int min = node.getKey();
-            double max_min_dist=-2;
-            for(int key: this.G.G.keySet()){
-                if(key != node.getKey()){
-                    double dist = this.shortestPathDist(node.getKey(), key);
-                    if(dist > max_min_dist){
-                        max_min_dist = dist;
+        Double[][] distances = new Double[this.G.node_num][this.G.node_num];
+        HashMap<Integer,Integer> trans = new HashMap<>();
+        int runner = 0;
+        for(int key:this.G.G.keySet()){
+            trans.put(runner,key);
+            runner++;
+        }
+        for(int i =0; i < this.G.node_num;i++){
+            for(int j =0; j < this.G.node_num;j++){
+                if(i==j){
+                    distances[i][j] = 0.0;
+                }
+                else {
+                    distances[i][j] = Double.MAX_VALUE;
+                }
+            }
+        }
+        for(int i =0; i < this.G.node_num;i++){
+            for(int j =0; j < this.G.node_num;j++){
+                if(i==j){
+                    distances[i][j] = 0.0;
+                }
+                else {
 
+                    EdgeData dist = this.G.getEdge(trans.get(i),trans.get(j));
+                    if(dist == null) {
+                        distances[i][j] = Double.MAX_VALUE;
+                    }
+                    else{
+
+                        distances[i][j] = dist.getWeight();
                     }
                 }
             }
-            if(dist_of_center == -1){
-                center = min;
-                dist_of_center = max_min_dist;
+        }
+        for(int k=0; k<this.G.node_num;k++){
+            for(int i =0; i <this.G.node_num;i++){
+                for(int j =0; j <this.G.node_num;j++){
+                    if (distances[i][j] > distances[i][k] + distances[k][j]) {
+                        distances[i][j] = distances[i][k] + distances[k][j];
+                    }
+                }
+
             }
-            else if(dist_of_center>max_min_dist){
-                dist_of_center = max_min_dist;
-                center = min;
+
+        }
+        double[] max_dist = new double[this.G.node_num];
+        for(int i =0; i <this.G.node_num;i++){
+            max_dist[i] = 0;
+        }
+        for(int i =0; i <this.G.node_num;i++){
+            for(int j =0; j <this.G.node_num;j++){
+                if(max_dist[i]<distances[i][j]){
+                    max_dist[i] = distances[i][j];
+                }
+            }
+
+        }
+
+        int center = 0;
+        for(int i =0; i <this.G.node_num;i++){
+
+            if(max_dist[center]>=max_dist[i]){
+
+                center = i;
             }
         }
-        if(this.isConnected()) {
-            return this.G.getNode(center);
-        }
-        else{
-            return null;
-        }
+        return this.G.getNode(trans.get(center));
     }
 
     /**
