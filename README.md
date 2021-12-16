@@ -7,8 +7,9 @@ or running some algorithms
 
 ## Authors
 
-- [@oa1321](https://www.github.com/oa1321) 213101637
-- [@shayperetz6](https://github.com/shayperetz6) 203464870
+- [@oa1321](https://www.github.com/oa1321) 
+- [@shayperetz6](https://github.com/shayperetz6) 
+- 
 
 
 ## The Problem Space
